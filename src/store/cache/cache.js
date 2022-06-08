@@ -23,4 +23,6 @@ localforage.config({
 //     return localforage.getItem(ls_key);
 //   }
 // };
-localforage.removeItem("datalist");
+localforage.setItem("datalist", [1, 2, 3]);
+
+localforage.getItem("datalist").then(value => console.log(value));
