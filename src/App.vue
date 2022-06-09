@@ -44,10 +44,13 @@ export default {
       currentpage: 0
     };
   },
-  mounted() {
-    if (localStorage.getItem("datalist")) {
-      this.datalist = JSON.parse(localStorage.getItem(`datalist`));
-      this.page = Number(localStorage.getItem("page"));
+  async mounted() {
+    const datalist = await this.$store.getters["getDataList"];
+    const page = await this.$store.getters["getPage"];
+
+    if (datalist) {
+      this.datalist = datalist;
+      this.page = page;
       this.bottompage = this.page;
       this.bottomloader = true;
     } else {
@@ -70,9 +73,9 @@ export default {
           .then(({ data }) => {
             if (data.hits.length) {
               this.datalist[`page${this.page}`] = data.hits;
-              localStorage.setItem("datalist", JSON.stringify(this.datalist));
+              this.$store.commit("SET_DATALIST", this.datalist);
               this.list.unshift(...data.hits);
-              localStorage.setItem("page", String(this.page));
+              this.$store.commit("SET_PAGE", this.page);
               this.page += 1;
               $state.loaded();
             } else {

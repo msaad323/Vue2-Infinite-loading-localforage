@@ -9,18 +9,23 @@ localforage.config({
   description: "Infinite handler using localforage"
 });
 
-// var cache = {
-//   /**
-//    * set_current_user_id_ls
-//    * Save the currently selected user to Localstorage
-//    */
-//   set__current_dataList(CURRENT_data_list) {
-//     let ls_key = "dataList";
-//     localforage.setItem(ls_key, CURRENT_data_list);
-//   },
+export default {
+  set_data_list(CURRENT_data_list) {
+    let ls_key = "dataList";
+    localforage.setItem(ls_key, CURRENT_data_list);
+  },
 
-//   get_CURRENT_data_list() {
-//     return localforage.getItem(ls_key);
-//   }
-// };
-localforage.removeItem("datalist");
+  get_data_list() {
+    let ls_key = "dataList";
+    return localforage.getItem(ls_key);
+  },
+  set_page(CURRENT_page) {
+    let ls_key = "page";
+    localforage.setItem(ls_key, CURRENT_page);
+  },
+
+  get_page() {
+    let ls_key = "page";
+    return localforage.getItem(ls_key);
+  }
+};
