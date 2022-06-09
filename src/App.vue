@@ -24,7 +24,6 @@
 <script>
 import InfiniteLoading from "vue-infinite-loading";
 import axios from "axios";
-
 const api = "//hn.algolia.com/api/v1/search_by_date?tags=story";
 
 export default {
@@ -44,10 +43,12 @@ export default {
       currentpage: 0
     };
   },
-  mounted() {
-    if (localStorage.getItem("datalist")) {
-      this.datalist = JSON.parse(localStorage.getItem(`datalist`));
-      this.page = Number(localStorage.getItem("page"));
+  async mounted() {
+    const datalist = await this.$store.getters["getDataList"];
+    const page = await this.$store.getters["getPage"];
+    if (datalist) {
+      this.datalist = datalist;
+      this.page = page;
       this.bottompage = this.page;
       this.bottomloader = true;
     } else {
@@ -67,12 +68,14 @@ export default {
               page: this.page
             }
           })
-          .then(({ data }) => {
+          .then(async ({ data }) => {
             if (data.hits.length) {
               this.datalist[`page${this.page}`] = data.hits;
-              localStorage.setItem("datalist", JSON.stringify(this.datalist));
+              this.$store.commit("setDatalistCommit", this.datalist);
               this.list.unshift(...data.hits);
-              localStorage.setItem("page", String(this.page));
+              this.$store.commit("setPageCommit", this.page);
+              // console.log(this.$store.getters["getPage"]);
+              // console.log(this.$store.getters["getDataList"]);
               this.page += 1;
               $state.loaded();
             } else {

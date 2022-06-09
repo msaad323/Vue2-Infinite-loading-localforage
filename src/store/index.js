@@ -1,35 +1,42 @@
 import Vuex from "vuex";
 import Vue from "vue";
-import cache from "./cache/cache.js";
-
-import axios from "axios";
+import cache from "./cache/cacheLs.js";
 
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    datalist: []
+    datalist: cache.get_data_list() || [],
+    page: cache.get_page() || 0
   },
   mutations: {
-    SET_NEWS(state, datalist) {
+    setDatalistCommit(state, datalist) {
       state.datalist = datalist;
+      cache.set_data_list(datalist);
+    },
+    setPageCommit(state, page) {
+      state.page = page;
+      cache.set_page(page);
     }
   },
-  actions: {
-    async fetchNews({ commit }) {
-      try {
-        const response = await axios.get(
-          "//hn.algolia.com/api/v1/search_by_date?tags=story"
-        );
-        commit("SET_NEWS", response.data.hits);
-      } catch (error) {
-        alert(error);
-        console.log(error);
-      }
-    }
-  },
+  // actions: {
+  //   setDataListAction(context, payload) {
+  //     console.log(payload);
+  //     return new Promise((resolve, reject) => {
+  //       context.commit("setDatalistCommit", payload);
+  //       resolve();
+  //     });
+  //   },
+  //   setPageAction(context, payload) {
+  //     return new Promise((resolve, reject) => {
+  //       context.commit("setPageCommit", payload);
+  //       resolve();
+  //     });
+  //   }
+  // },
   getters: {
-    getNews: state => state.datalist
+    getDataList: state => state.datalist,
+    getPage: state => state.page
   }
 });
 
