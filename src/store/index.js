@@ -19,19 +19,11 @@ const store = new Vuex.Store({
       cache.set_page(page);
     }
   },
-  // actions: {
-  //   async fetchNews({ commit }) {
-  //     try {
-  //       const response = await axios.get(
-  //         "//hn.algolia.com/api/v1/search_by_date?tags=story"
-  //       );
-  //       commit("SET_NEWS", response.data.hits);
-  //     } catch (error) {
-  //       alert(error);
-  //       console.log(error);
-  //     }
-  //   }
-  // },
+  actions: {
+    setDataListAction({ commit }, payload) {
+      commit("SET_DATALIST", payload);
+    }
+  },
   getters: {
     getDataList: state => state.datalist,
     getPage: state => state.page
