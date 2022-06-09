@@ -22,6 +22,9 @@ const store = new Vuex.Store({
   actions: {
     setDataListAction({ commit }, payload) {
       commit("SET_DATALIST", payload);
+    },
+    setPageAction({ commit }, payload) {
+      commit("SET_PAGE", payload);
     }
   },
   getters: {
