@@ -43,12 +43,17 @@ export default {
       currentpage: 0
     };
   },
+  created() {
+    window.addEventListener("scroll", this.actionScroll);
+  },
   async mounted() {
     const datalist = await this.$store.getters["getDataList"];
     const page = await this.$store.getters["getPage"];
+
     if (datalist) {
       this.datalist = datalist;
       this.page = page;
+      this.currentpage = page;
       this.bottompage = this.page;
       this.bottomloader = true;
     } else {
@@ -56,6 +61,14 @@ export default {
     }
   },
   methods: {
+    actionScroll(event) {
+      // if (scroll > 1572) this.currentpage += 1;
+      // console.log(this.$store.getters["getPage"]);
+
+      console.log(this.currentpage);
+
+      console.log(scrollY);
+    },
     infiniteHandler($state) {
       if (this.datalist[`page${this.page}`]) {
         this.list.unshift(...this.datalist[`page${this.page}`]);
@@ -74,8 +87,8 @@ export default {
               this.$store.commit("setDatalistCommit", this.datalist);
               this.list.unshift(...data.hits);
               this.$store.commit("setPageCommit", this.page);
-              // console.log(this.$store.getters["getPage"]);
-              // console.log(this.$store.getters["getDataList"]);
+              this.currentpage = this.page;
+              console.log(this.currentpage);
               this.page += 1;
               $state.loaded();
             } else {
@@ -87,9 +100,15 @@ export default {
     infiniteHandlerBottom($state) {
       if (this.datalist[`page${this.bottompage}`]) {
         this.list.push(...this.datalist[`page${this.bottompage}`]);
+        this.currentpage = this.bottompage;
+        // console.log(this.bottompage);
         this.bottompage--;
-        this.toploader = true;
-        $state.loaded();
+
+        setTimeout(() => {
+          console.log("saad");
+          this.toploader = true;
+          $state.loaded();
+        }, 1000);
       } else {
         $state.complete();
       }
