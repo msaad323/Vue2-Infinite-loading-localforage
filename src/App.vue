@@ -53,7 +53,7 @@ export default {
     if (datalist) {
       this.datalist = datalist;
       this.page = page;
-      this.currentpage = page;
+      // this.currentpage = page;
       this.bottompage = this.page;
       this.bottomloader = true;
     } else {
@@ -61,13 +61,14 @@ export default {
     }
   },
   methods: {
-    actionScroll(event) {
+    async actionScroll(event) {
       // if (scroll > 1572) this.currentpage += 1;
       // console.log(this.$store.getters["getPage"]);
-
+      this.currentpage = await this.$store.getters["getPage"];
+      this.$store.commit("setCurrentPageCommit", this.currentpage);
       console.log(this.currentpage);
 
-      console.log(scrollY);
+      // console.log(scrollY);
     },
     infiniteHandler($state) {
       if (this.datalist[`page${this.page}`]) {
@@ -87,8 +88,8 @@ export default {
               this.$store.commit("setDatalistCommit", this.datalist);
               this.list.unshift(...data.hits);
               this.$store.commit("setPageCommit", this.page);
-              this.currentpage = this.page;
-              console.log(this.currentpage);
+              // this.currentpage = this.page;
+              // console.log(this.currentpage);
               this.page += 1;
               $state.loaded();
             } else {
@@ -100,7 +101,7 @@ export default {
     infiniteHandlerBottom($state) {
       if (this.datalist[`page${this.bottompage}`]) {
         this.list.push(...this.datalist[`page${this.bottompage}`]);
-        this.currentpage = this.bottompage;
+        // this.currentpage = this.bottompage;
         // console.log(this.bottompage);
         this.bottompage--;
 
