@@ -7,8 +7,8 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     datalist: cache.get_data_list() || [],
-    page: cache.get_page() || 0,
-    currentPage: cache.get_current_page()
+    page: cache.get_page() || 0
+    // currentPage: cache.get_current_page()
   },
   mutations: {
     setDatalistCommit(state, datalist) {
@@ -18,11 +18,11 @@ const store = new Vuex.Store({
     setPageCommit(state, page) {
       state.page = page;
       cache.set_page(page);
-    },
-    setCurrentPageCommit(state, currentPage) {
-      state.currentPage = currentPage;
-      cache.set_current_page(currentPage);
     }
+    // setCurrentPageCommit(state, currentPage) {
+    //   state.currentPage = currentPage;
+    //   cache.set_current_page(currentPage);
+    // }
   },
   // actions: {
   //   setDataListAction(context, payload) {

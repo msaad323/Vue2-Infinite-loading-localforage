@@ -7,7 +7,7 @@
         direction="top"
         @infinite="infiniteHandler"
       ></infinite-loading>
-      <div v-for="(item, index) of list" :id="index" :key="index">
+      <div v-for="(item, index) of list" :key="index">
         <h3>
           <a :href="item.url" target="_blank">{{ item.title }}</a>
         </h3>
@@ -31,7 +31,6 @@ export default {
   components: {
     InfiniteLoading
   },
-
   data() {
     return {
       page: 0,
@@ -40,11 +39,16 @@ export default {
       toploader: false,
       bottomloader: false,
       bottompage: 0,
-      currentpage: 0
+      currentpage: 0,
+      newValue: 0,
+      oldValue: 0
     };
   },
   created() {
-    window.addEventListener("scroll", this.actionScroll);
+    // window.addEventListener("scroll", this.actionScroll);
+    const elem = document.querySelector("div.scroll-list");
+    // const scrollableElement = document.body;
+    window.addEventListener("scroll", this.checkScrollDirection);
   },
   async mounted() {
     const datalist = await this.$store.getters["getDataList"];
@@ -54,22 +58,33 @@ export default {
       this.datalist = datalist;
       this.page = page;
       // this.currentpage = page;
-      this.bottompage = this.page;
+      // this.bottompage = this.page;
+      this.bottompage = page;
       this.bottomloader = true;
     } else {
       this.toploader = true;
     }
   },
   methods: {
-    async actionScroll(event) {
-      // if (scroll > 1572) this.currentpage += 1;
-      // console.log(this.$store.getters["getPage"]);
-      this.currentpage = await this.$store.getters["getPage"];
-      this.$store.commit("setCurrentPageCommit", this.currentpage);
-      console.log(this.currentpage);
+    // async actionScroll(event) {
+    // this.currentpage = await this.$store.getters["getPage"];
+    // console.log("bottompage: " + this.bottompage);
+    // this.$store.commit("setCurrentPageCommit", this.currentpage);
+    // console.log(h1.getBoundingClientRect());
 
-      // console.log(scrollY);
+    checkScrollDirection(event) {
+      this.newValue = window.pageYOffset;
+      if (this.oldValue > this.newValue) {
+        this.currentpage = this.page;
+      } else if (this.oldValue < this.newValue) {
+        // this.currentpage = this.bottompage;
+        this.currentpage += 1;
+      }
+      this.oldValue = this.newValue;
+      console.log(this.currentpage);
     },
+    // },
+
     infiniteHandler($state) {
       if (this.datalist[`page${this.page}`]) {
         this.list.unshift(...this.datalist[`page${this.page}`]);
@@ -91,6 +106,7 @@ export default {
               // this.currentpage = this.page;
               // console.log(this.currentpage);
               this.page += 1;
+              console.log(this.page);
               $state.loaded();
             } else {
               $state.complete();
@@ -102,14 +118,13 @@ export default {
       if (this.datalist[`page${this.bottompage}`]) {
         this.list.push(...this.datalist[`page${this.bottompage}`]);
         // this.currentpage = this.bottompage;
-        // console.log(this.bottompage);
+        console.log(this.bottompage);
         this.bottompage--;
 
         setTimeout(() => {
-          console.log("saad");
           this.toploader = true;
-          $state.loaded();
-        }, 1000);
+        }, 3000);
+        $state.loaded();
       } else {
         $state.complete();
       }

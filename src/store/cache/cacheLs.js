@@ -28,13 +28,13 @@ export default {
   get_page() {
     let ls_key = "page";
     return localforage.getItem(ls_key);
-  },
-  set_current_page(current_page) {
-    let ls_key = "current_page";
-    localforage.setItem(ls_key, current_page);
-  },
-  get_current_page() {
-    let ls_key = "current_page";
-    return localforage.getItem(ls_key);
   }
+  // set_current_page(current_page) {
+  //   let ls_key = "current_page";
+  //   localforage.setItem(ls_key, current_page);
+  // },
+  // get_current_page() {
+  //   let ls_key = "current_page";
+  //   return localforage.getItem(ls_key);
+  // }
 };
