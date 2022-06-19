@@ -77,10 +77,6 @@ export default {
   },
   methods: {
     checkScrollDirection(event) {
-      // this.count = scrollY;
-      // console.log(document.body.scroll());
-      // console.log(scrollY);
-      // console.log(window.innerHeight);
       var scrollY = window.scrollY;
       if (scrollY < this.startY) {
         this.direction = "scrollUp";
@@ -89,15 +85,6 @@ export default {
       }
       this.startY = scrollY;
 
-      // if (div) && this.direction === "scrollUp") {
-      //   this.pager++;
-      // }
-      // console.log(div);
-      // var rect = div.getBoundingClientRect();
-      // console.log(rect);
-      // this.list.forEach(item => console.log(item));/
-      // console.log(window.innerHeight);
-      // console.log(this.list.length / 20);
       this.list.forEach(
         (item, index) => {
           this.page = Math.floor(index / 20);
