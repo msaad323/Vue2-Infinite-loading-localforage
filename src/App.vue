@@ -15,7 +15,7 @@
       >
         <h3>
           <a :href="item.url" target="_blank"
-            >{{ item.objectID }} {{ index }} {{ item.title }}
+            >{{ item.objectID }}, {{ index }}, {{ item.title }}
           </a>
         </h3>
         <p>~ {{ item.points }} points by {{ item.author }}</p>
@@ -46,20 +46,11 @@ export default {
       toploader: false,
       bottomloader: false,
       bottompage: 0,
-      currentpage: 0,
-      newValue: 0,
-      oldValue: 0,
-      count: null,
-      pager: 0,
-      direction: null,
-      startY: 0
+      currentpage: 0
     };
   },
   created() {
-    window.addEventListener("scroll", this.actionScroll);
-    const elem = document.querySelector("div.scroll-list");
-
-    window.addEventListener("scroll", this.checkScrollDirection);
+    window.addEventListener("scroll", this.scrollBehavior);
   },
   async mounted() {
     const datalist = await this.$store.getters["getDataList"];
@@ -68,7 +59,7 @@ export default {
     if (datalist) {
       this.datalist = datalist;
       this.page = page;
-      this.currentpage = page;
+      // this.currentpage = page;
       this.bottompage = page;
       this.bottomloader = true;
     } else {
@@ -76,39 +67,29 @@ export default {
     }
   },
   methods: {
-    checkScrollDirection(event) {
-      var scrollY = window.scrollY;
-      if (scrollY < this.startY) {
-        this.direction = "scrollUp";
-      } else {
-        this.direction = "scrollDown";
-      }
-      this.startY = scrollY;
-
-      this.list.forEach(
-        (item, index) => {
-          this.page = Math.floor(index / 20);
-          console.log(this.page);
-          console.log(
-            "item: " + item.objectID,
-            "page" + Math.floor(index / 20),
-            this.isElementInViewport(document.getElementById(item.objectID))
-          );
+    scrollBehavior(event) {
+      this.list.forEach((item, index) => {
+        // this.currentpage = Math.floor(index / 20);
+        // console.log(this.currentpage);
+        // console.log(
+        //   "item: " + item.objectID,
+        //   "page" + Math.floor(index / 20),
+        //   this.isElementInViewport(document.getElementById(item.objectID))
+        // );
+        if (this.isElementInViewport(document.getElementById(item.objectID))) {
+          console.log("-----------------------------");
+          console.log(item.objectID);
+          for (let obj in this.datalist) {
+            for (let page of this.datalist[obj]) {
+              if (page.objectID === item.objectID) {
+                this.currentpage = obj.slice(4);
+                console.log(this.currentpage);
+              }
+            }
+            // console.log(obj);
+          }
         }
-        //   if (
-        //     this.isElementInViewport(document.getElementById(item.objectID))
-        //   ) {
-        //     console.log(item.objectID);
-        //   }
-      );
-
-      if (this.isElementInViewport)
-        if (scrollY === 0 && this.direction === "scrollUp") {
-          this.pager++;
-          // console.log(this.pager);
-        } else if (this.direction === "scrollDown") {
-          this.pager--;
-        }
+      });
     },
     isElementInViewport(el) {
       var rect = el.getBoundingClientRect();
@@ -153,8 +134,8 @@ export default {
         this.list.push(...this.datalist[`page${this.bottompage}`]);
         // this.currentpage = this.bottompage;
         // console.log(this.bottompage);
-        this.bottompage--;
 
+        this.bottompage--;
         setTimeout(() => {
           this.toploader = true;
         }, 3000);
