@@ -7,9 +7,16 @@
         direction="top"
         @infinite="infiniteHandler"
       ></infinite-loading>
-      <div v-for="(item, index) of list" :key="index">
+      <div
+        v-for="(item, index) of list"
+        :id="item.objectID"
+        :key="index"
+        class="item"
+      >
         <h3>
-          <a :href="item.url" target="_blank">{{ item.title }}</a>
+          <a :href="item.url" target="_blank"
+            >{{ item.objectID }} {{ index }} {{ item.title }}
+          </a>
         </h3>
         <p>~ {{ item.points }} points by {{ item.author }}</p>
       </div>
@@ -41,13 +48,17 @@ export default {
       bottompage: 0,
       currentpage: 0,
       newValue: 0,
-      oldValue: 0
+      oldValue: 0,
+      count: null,
+      pager: 0,
+      direction: null,
+      startY: 0
     };
   },
   created() {
-    // window.addEventListener("scroll", this.actionScroll);
+    window.addEventListener("scroll", this.actionScroll);
     const elem = document.querySelector("div.scroll-list");
-    // const scrollableElement = document.body;
+
     window.addEventListener("scroll", this.checkScrollDirection);
   },
   async mounted() {
@@ -57,8 +68,7 @@ export default {
     if (datalist) {
       this.datalist = datalist;
       this.page = page;
-      // this.currentpage = page;
-      // this.bottompage = this.page;
+      this.currentpage = page;
       this.bottompage = page;
       this.bottomloader = true;
     } else {
@@ -66,25 +76,62 @@ export default {
     }
   },
   methods: {
-    // async actionScroll(event) {
-    // this.currentpage = await this.$store.getters["getPage"];
-    // console.log("bottompage: " + this.bottompage);
-    // this.$store.commit("setCurrentPageCommit", this.currentpage);
-    // console.log(h1.getBoundingClientRect());
-
     checkScrollDirection(event) {
-      this.newValue = window.pageYOffset;
-      if (this.oldValue > this.newValue) {
-        this.currentpage = this.page;
-      } else if (this.oldValue < this.newValue) {
-        // this.currentpage = this.bottompage;
-        this.currentpage += 1;
+      // this.count = scrollY;
+      // console.log(document.body.scroll());
+      // console.log(scrollY);
+      // console.log(window.innerHeight);
+      var scrollY = window.scrollY;
+      if (scrollY < this.startY) {
+        this.direction = "scrollUp";
+      } else {
+        this.direction = "scrollDown";
       }
-      this.oldValue = this.newValue;
-      console.log(this.currentpage);
-    },
-    // },
+      this.startY = scrollY;
 
+      // if (div) && this.direction === "scrollUp") {
+      //   this.pager++;
+      // }
+      // console.log(div);
+      // var rect = div.getBoundingClientRect();
+      // console.log(rect);
+      // this.list.forEach(item => console.log(item));/
+      // console.log(window.innerHeight);
+      // console.log(this.list.length / 20);
+      this.list.forEach(
+        (item, index) => {
+          this.page = Math.floor(index / 20);
+          console.log(this.page);
+          console.log(
+            "item: " + item.objectID,
+            "page" + Math.floor(index / 20),
+            this.isElementInViewport(document.getElementById(item.objectID))
+          );
+        }
+        //   if (
+        //     this.isElementInViewport(document.getElementById(item.objectID))
+        //   ) {
+        //     console.log(item.objectID);
+        //   }
+      );
+
+      if (this.isElementInViewport)
+        if (scrollY === 0 && this.direction === "scrollUp") {
+          this.pager++;
+          // console.log(this.pager);
+        } else if (this.direction === "scrollDown") {
+          this.pager--;
+        }
+    },
+    isElementInViewport(el) {
+      var rect = el.getBoundingClientRect();
+      return (
+        rect.bottom > 0 &&
+        rect.right > 0 &&
+        rect.left < window.innerWidth &&
+        rect.top < window.innerHeight
+      );
+    },
     infiniteHandler($state) {
       if (this.datalist[`page${this.page}`]) {
         this.list.unshift(...this.datalist[`page${this.page}`]);
@@ -106,7 +153,7 @@ export default {
               // this.currentpage = this.page;
               // console.log(this.currentpage);
               this.page += 1;
-              console.log(this.page);
+              // console.log(this.page);
               $state.loaded();
             } else {
               $state.complete();
@@ -118,7 +165,7 @@ export default {
       if (this.datalist[`page${this.bottompage}`]) {
         this.list.push(...this.datalist[`page${this.bottompage}`]);
         // this.currentpage = this.bottompage;
-        console.log(this.bottompage);
+        // console.log(this.bottompage);
         this.bottompage--;
 
         setTimeout(() => {
@@ -155,5 +202,9 @@ export default {
 body {
   font-family: "Montserrat", sans-serif;
   background-attachment: fixed;
+}
+.item {
+  border: 1px solid black;
+  margin: 3px;
 }
 </style>

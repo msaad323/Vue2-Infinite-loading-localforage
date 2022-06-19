@@ -17,7 +17,6 @@ export default {
 
   get_data_list() {
     let ls_key = "dataList";
-    console.log("Saad");
     return localforage.getItem(ls_key);
   },
 
